@@ -1,11 +1,10 @@
 // Check pull request rules from AGENTS.md: branch name, description, commit messages, version changes, and new dependencies.
-// Dependabot pull requests skip only the branch name and description checks. See docs/GITHUB_ACTIONS.md.
-// Usage: PR_AUTHOR=<login> HEAD_REF=<branch> BASE_SHA=<sha> HEAD_SHA=<sha> PR_TITLE=<text> PR_BODY=<text> node scripts/ci/pr-rules.mjs
+// Usage: HEAD_REF=<branch> BASE_SHA=<sha> HEAD_SHA=<sha> PR_TITLE=<text> PR_BODY=<text> node scripts/ci/pr-rules.mjs
 import { spawnSync } from 'node:child_process';
 import { devNull } from 'node:os';
 
 import { listPackages, main, root, safe, summary } from './lib.mjs';
-import { aiLinkProblems, branchProblems, isDependabotPullRequest, lockfileChanges, pullRequestBodyProblems, versionProblems } from './rules.mjs';
+import { aiLinkProblems, branchProblems, lockfileChanges, pullRequestBodyProblems, versionProblems } from './rules.mjs';
 
 const objectName = /^[0-9a-f]{40}([0-9a-f]{24})?$/;
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !key.toUpperCase().startsWith('GIT_')));
@@ -27,13 +26,10 @@ function readJsonAt(revision, path) {
 }
 
 await main(() => {
-  const { PR_AUTHOR: author = '', HEAD_REF: headRef = '', BASE_SHA: baseSha = '', HEAD_SHA: headSha = '', PR_TITLE: title = '', PR_BODY: body = '' } = process.env;
+  const { HEAD_REF: headRef = '', BASE_SHA: baseSha = '', HEAD_SHA: headSha = '', PR_TITLE: title = '', PR_BODY: body = '' } = process.env;
   if (!objectName.test(baseSha) || !objectName.test(headSha)) throw new Error('BASE_SHA and HEAD_SHA must be full commit object names.');
   const mergeBase = git(['merge-base', baseSha, headSha]).trim();
-  const dependabot = isDependabotPullRequest(author, headRef);
-  if (dependabot) console.log('Dependabot pull request: the branch name and the description template are not checked.');
-  const templateProblems = dependabot ? [] : [...branchProblems(headRef), ...pullRequestBodyProblems(body)];
-  const problems = [...templateProblems, ...aiLinkProblems(`${title}\n${body}`, 'PR title or description')];
+  const problems = [...branchProblems(headRef), ...pullRequestBodyProblems(body), ...aiLinkProblems(`${title}\n${body}`, 'PR title or description')];
 
   // Commit messages are separated by NUL, because a message can contain any other character.
   const commits = git(['log', '--format=%H%x00%B%x00', `${mergeBase}..${headSha}`]).split('\0');

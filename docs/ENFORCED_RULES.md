@@ -75,8 +75,6 @@ It runs again when the title or description changes. Tests do not run again for 
 4. A change to files in `packages/<directory>/` outside `test/` requires one version step: patch, minor, or major. A skipped or reduced version is an error.
 5. New or changed packages in `package-lock.json` come from `https://registry.npmjs.org/` with a `sha512` integrity value. A new install script requires a human review. The job lists the changed packages and runs `npm audit --package-lock-only --audit-level=high`.
 
-The template has no Dependabot configuration. If a project adds one, Dependabot pull requests skip rules 1 and 2 only. See [Dependabot](GITHUB_ACTIONS.md#dependabot).
-
 ## Limits
 
 These checks do not replace a review. They find known patterns and structure problems.
