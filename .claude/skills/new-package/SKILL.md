@@ -1,6 +1,6 @@
 ---
 name: new-package
-description: Add a new pipeline package to packages/ in this repository. Use when the user asks to create, scaffold, or start a new pipeline tool, library, or workspace package.
+description: Add a new workspace package to packages/ in this repository. Use when the user asks to create, scaffold, or start a new library, command-line tool, Vue application, or workspace package.
 ---
 
 # Shared new package workflow

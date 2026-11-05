@@ -1,26 +1,24 @@
-# AI Girls Generator
+# Modern monorepo template
 
-A reproducible asset factory for layered cutout anime-girl characters.
-Each character is a package of PNG parts and a JSON sidecar. All characters fit one shared Spine skeleton and one shared animation set.
+A template for npm workspaces monorepos with Node.js, TypeScript, Vue 3, Vite, and Vitest.
+It contains shared tool configuration, repository checks, Git hooks, GitHub Actions workflows, and instructions for AI agents and people.
 
-**Status: draft.** The repository contains agent rules, draft design documents, and the npm workspaces setup with shared tool configuration. No pipeline package exists yet.
+**Status: template.** The repository has no package yet. To start a project, follow [Adapt the template](docs/ADAPTING.md).
 
 ## Documents
 
-| Document                                                     | Content                                                       |
-| ------------------------------------------------------------ | ------------------------------------------------------------- |
-| [Architecture](docs/ARCHITECTURE.md)                         | Goal, scope, pipeline stages, and candidate tools.            |
-| [Rig contract](docs/RIG_CONTRACT.md)                         | Bones, slots, coordinate spaces, names, overlaps, tolerances. |
-| [Character package](docs/CHARACTER_PACKAGE.md)               | Package layout, image rules, sidecar, and provenance.         |
-| [Decision log](docs/DECISIONS.md)                            | Owner requirements and open decisions.                        |
-| [Model license registry](docs/MODEL_LICENSES.md)             | Candidate models and tools with their licenses.               |
-| [Roadmap](docs/ROADMAP.md)                                   | Phases, gates, and experiments.                               |
-| [Workspaces](docs/WORKSPACES.md)                             | npm workspaces layout and planned packages.                   |
-| [Engineering requirements](docs/ENGINEERING_REQUIREMENTS.md) | Languages, runtime, portability, and security for tooling.    |
-| [Enforced rules](docs/ENFORCED_RULES.md)                     | ESLint rules, configuration check, Git hooks, and PR rules.   |
-| [Git hooks](docs/GIT_HOOKS.md)                               | Lefthook hooks and Gitleaks secret checks.                    |
-| [GitHub Actions](docs/GITHUB_ACTIONS.md)                     | CI workflows, inputs, Dependabot, and CodeQL.                 |
-| [Glossary](docs/GLOSSARY.md)                                 | Terms for code, data, and documentation.                      |
+| Document                                                     | Content                                                         |
+| ------------------------------------------------------------ | --------------------------------------------------------------- |
+| [Adapt the template](docs/ADAPTING.md)                       | Required and optional changes for a new project.                |
+| [Architecture](docs/ARCHITECTURE.md)                         | Goal, scope, components, and trust boundaries (template).       |
+| [Decision log](docs/DECISIONS.md)                            | Owner requirements and open decisions (template).               |
+| [Workspaces](docs/WORKSPACES.md)                             | npm workspaces layout, package kinds, and shared configuration. |
+| [Engineering requirements](docs/ENGINEERING_REQUIREMENTS.md) | Languages, runtime, portability, and security for tooling.      |
+| [Enforced rules](docs/ENFORCED_RULES.md)                     | ESLint rules, configuration check, Git hooks, and PR rules.     |
+| [Git hooks](docs/GIT_HOOKS.md)                               | Lefthook hooks and Gitleaks secret checks.                      |
+| [GitHub Actions](docs/GITHUB_ACTIONS.md)                     | CI workflows, inputs, and CodeQL.                               |
+| [Writing rules](docs/WRITING.md)                             | English documentation rules based on ASD-STE100.                |
+| [Glossary](docs/GLOSSARY.md)                                 | Terms for code, data, and documentation.                        |
 
 ## AI agents
 

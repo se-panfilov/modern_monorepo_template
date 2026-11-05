@@ -7,25 +7,26 @@ They do not use vendor-specific agent hooks.
 Cloud agents work in a new clone. Local Git hooks are not installed there, because `npm ci --ignore-scripts` does not install them.
 For this reason, CI repeats each hook check. Branch protection on GitHub is the last control.
 
-The checks come from the Toolchain repository. The package rules are changed for the pipeline packages in `packages/`. See [the workspace layout](WORKSPACES.md).
+The package rules apply to each package in `packages/`. See [the workspace layout](WORKSPACES.md).
 
 ## ESLint
 
 The shared [configuration](../configs/eslint.config.mjs) has these project rules in addition to the recommended JavaScript and TypeScript rules.
 
-| Rule                                                                                                 | Source                         |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------ |
-| No `exec` or `execSync` import, and no `shell` option except `false`.                                | AGENTS.md, Security            |
-| Node.js built-in modules use the `node:` prefix.                                                     | AGENTS.md, Implementation      |
-| Strings, template literals, test names, and code comments have no Cyrillic text.                     | AGENTS.md, Documentation       |
-| A package imports only its own `@<directory>/*` alias. Source modules do not use relative imports.   | AGENTS.md, Implementation      |
-| A package does not import the source of another package. It uses a workspace dependency and exports. | WORKSPACES.md                  |
-| No property setters, no `arguments`, and at most two `Object.assign` arguments.                      | Toolchain code style           |
-| Sorted imports and exports. Type-only imports use type markers. Functions have return types.         | Toolchain code style           |
-| Type-aware `recommendedTypeChecked` rules for package TypeScript, `strictTypeChecked` for `src/`.    | Toolchain code style, Security |
+| Rule                                                                                                       | Source                       |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| No `exec` or `execSync` import, and no `shell` option except `false`.                                      | AGENTS.md, Security          |
+| Node.js built-in modules use the `node:` prefix.                                                           | AGENTS.md, Implementation    |
+| Strings, template literals, test names, and code comments have no Cyrillic text.                           | AGENTS.md, Documentation     |
+| A package imports only its own `@<directory>/*` alias. Source modules do not use relative imports.         | AGENTS.md, Implementation    |
+| A package does not import the source of another package. It uses a workspace dependency and exports.       | WORKSPACES.md                |
+| No property setters, no `arguments`, and at most two `Object.assign` arguments.                            | Project code style           |
+| Sorted imports and exports. Type-only imports use type markers. Functions have return types.               | Project code style           |
+| Type-aware `recommendedTypeChecked` rules for package TypeScript, `strictTypeChecked` for `src/`.          | Project code style, Security |
+| Vue files: `flat/recommended` Vue rules, `<script lang="ts">`, `<script setup>`, no `v-html`, typed `ref`. | AGENTS.md, Implementation    |
 
 The configuration reads `packages/` and makes the alias rules for each package directory. A new package gets these rules without a configuration change.
-The self-import rule reads the package name from `package.json`, because the name scope is an open decision (D21).
+The self-import rule reads the package name from `package.json`, because each project selects its own npm scope.
 The selectors check direct static code. They do not follow aliases, dynamic property names, or `require` calls. They do not establish an execution boundary.
 
 ## Configuration check
@@ -35,19 +36,19 @@ The selectors check direct static code. They do not follow aliases, dynamic prop
 | Area             | Check                                                                                                                                                                                                                                                                                                                                                                 |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Base tsconfig    | The required compiler options are present with the documented values.                                                                                                                                                                                                                                                                                                 |
-| Package tsconfig | It extends the base. It sets only `rootDir: "."`, `outDir: "dist"`, and `paths`. The only alias is `@<directory>/*` → `./src/*.ts`.                                                                                                                                                                                                                                   |
+| Package tsconfig | It extends the Node.js base or the Vue base. It sets only `rootDir: "."`, `outDir: "dist"`, and `paths`. The only alias is `@<directory>/*` → `./src/*.ts`, or `./src/*` in a Vue package, which also includes `src/**/*.vue`.                                                                                                                                        |
 | Aliases          | Vite and Vitest resolve `@<directory>` to the package `src/` directory.                                                                                                                                                                                                                                                                                               |
 | Package metadata | `private: true`, `description`, `license`, `type: "module"`, `engines` equal to the root, `exports`, `README.md`, and the `build`, `typecheck`, `test`, `lint`, and `format:check` scripts. A CLI has one bin entry, a `start` script with the same entry, and a shebang.                                                                                             |
 | Dependencies     | Runtime dependencies are in `runtimeDependencyAllowlist`. Packages have no devDependencies. Root devDependencies use exact versions. No installation hooks.                                                                                                                                                                                                           |
 | Lockfile         | The package version agrees with `package-lock.json`.                                                                                                                                                                                                                                                                                                                  |
-| Structure        | Uppercase rule file names, rule files only in the root, no tracked `dist/`, one lockfile, no shell scripts outside `shellScriptAllowlist`, equal skill adapter descriptions, no tracked images, editor files, archives, or model weights outside `binaryAssetAllowlist`, and no agent host settings or override instruction files outside `hostConfigAllowlist`.      |
+| Structure        | Uppercase rule file names, rule files only in the root, no tracked `dist/`, one lockfile, no shell scripts outside `shellScriptAllowlist`, equal skill adapter descriptions, no tracked images, media, archives, or model weights outside `binaryAssetAllowlist`, and no agent host settings or override instruction files outside `hostConfigAllowlist`.             |
 | Language         | Tracked text files have no Cyrillic text. Vendored skills, skill patches, provenance data, and lockfiles are not checked.                                                                                                                                                                                                                                             |
 | Workflows        | Read-only top-level `permissions`, no `write-all`, actions pinned to full SHAs with a version comment, `persist-credentials: false` for checkout, no `${{ }}` in `run`, and no `pull_request_target`, `workflow_run`, `issue_comment`, `pull_request_review`, `pull_request_review_comment`, `discussion`, or `discussion_comment` event, in key, list, or flow form. |
 | Skills           | Each third-party skill file in `.agents/skills` has the SHA-256 value from `docs/skill-provenance.json`. `allowed-tools` contains only tools from `skillToolAllowlist`. SKILL.md has no `hooks` field and no pre-prompt command. Links in `.claude/skills` point to `.agents/skills`.                                                                                 |
 | Node.js version  | `.nvmrc` contains an exact version `X.Y.Z`. The root `engines.node` is `>=` the same version.                                                                                                                                                                                                                                                                         |
 
 The workflow check reads the line structure of the workflow files. It is not a complete YAML parser.
-Agent host settings and override instruction files are `.claude/settings.json`, `.claude/settings.local.json`, `.mcp.json`, `.gemini/settings.json`, `.codex/config.toml`, `.cursor/`, `.vscode/tasks.json`, `.vscode/settings.json`, `.vscode/mcp.json`, `AGENTS.override.md`, `CLAUDE.local.md`, `GEMINI.local.md`, `.cursorrules`, `.windsurfrules`, and `.clinerules`.
+Agent host settings and override instruction files are `.claude/settings.json`, `.claude/settings.local.json`, `.mcp.json`, `.gemini/settings.json`, `.codex/config.toml`, `.cursor/`, `.vscode/tasks.json`, `.vscode/settings.json`, `.vscode/mcp.json`, `AGENTS.override.md`, `CLAUDE.local.md`, `GEMINI.local.md`, `.cursorrules`, `.windsurfrules`, and `.clinerules` (a file or a directory). The check ignores letter case, because the macOS file system is case-insensitive.
 These files can run commands, grant tool permissions, start MCP servers, or replace the rules in AGENTS.md. A pull request can add them, and an agent can load them before a human reads them.
 The structure and language checks read the files that Git tracks. Stage new files before you run the check.
 
@@ -74,10 +75,10 @@ It runs again when the title or description changes. Tests do not run again for 
 4. A change to files in `packages/<directory>/` outside `test/` requires one version step: patch, minor, or major. A skipped or reduced version is an error.
 5. New or changed packages in `package-lock.json` come from `https://registry.npmjs.org/` with a `sha512` integrity value. A new install script requires a human review. The job lists the changed packages and runs `npm audit --package-lock-only --audit-level=high`.
 
-Dependabot pull requests skip rules 1 and 2 only. See [Dependabot](GITHUB_ACTIONS.md#dependabot).
+The template has no Dependabot configuration. If a project adds one, Dependabot pull requests skip rules 1 and 2 only. See [Dependabot](GITHUB_ACTIONS.md#dependabot).
 
 ## Limits
 
 These checks do not replace a review. They find known patterns and structure problems.
-They do not check the content rules, the rig contract, model licenses, or provenance records. Those rules need a human review until a validator package exists.
+They do not check the project data formats, content rules, licenses of external tools, or provenance records. Those rules need a human review or a project-specific validator.
 A person or an agent can bypass local hooks. Required status checks and branch rules on GitHub prevent a merge without the CI checks. The repository owner configures them.

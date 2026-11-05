@@ -1,10 +1,8 @@
 # Installed third-party skills
 
-These skills come from the owner's Toolchain repository.
-Toolchain installed them with `npx skills@1.7.4 add` in two installations, with exact Git revisions and the Codex, Claude Code, Cursor, GitHub Copilot, and Gemini CLI targets.
+These skills were installed with `npx skills@1.7.4 add` in two installations, with exact Git revisions and the Codex, Claude Code, Cursor, GitHub Copilot, and Gemini CLI targets.
 This repository copies the installed files. It does not run the installer again.
-The upstream revisions, licenses, and installer hashes are the same as in Toolchain.
-The local adaptations are rewritten for the asset pipeline.
+The local adaptations are general. A project can add its own items to the "Project integration" sections. Update the patch and the hashes after each change.
 
 ## Inventory
 
@@ -16,7 +14,7 @@ The local adaptations are rewritten for the asset pipeline.
 | supply-chain-risk-auditor | trailofbits/skills | Examine dependency metadata and advisories when requested.            |
 | agents-md                 | getsentry/skills   | Maintain concise project instruction files.                           |
 | skill-scanner             | getsentry/skills   | Examine skill instructions and scripts before adoption.               |
-| code-simplifier           | getsentry/skills   | Improve pipeline code readability while preserving behavior.          |
+| code-simplifier           | getsentry/skills   | Improve code readability while preserving behavior.                   |
 | doc-coauthoring           | anthropics/skills  | Develop substantial documents and examine reader understanding.       |
 | find-bugs                 | getsentry/skills   | Find bugs and vulnerabilities in branch changes without edits.        |
 | gha-security-review       | getsentry/skills   | Find exploitable GitHub Actions workflow vulnerabilities.             |
@@ -25,7 +23,7 @@ The local adaptations are rewritten for the asset pipeline.
 | grilling                  | mattpocock/skills  | Ask plan questions in rounds, each with a recommended answer.         |
 | writing-for-agents        | mattpocock/skills  | Apply writing principles to agent instructions and skills.            |
 
-The project skills `asset-factory` and `new-package` are not third-party skills. [The agent setup guide](AI_AGENTS.md#project-skills) describes them.
+The project skills `project-workflow` and `new-package` are not third-party skills. [The agent setup guide](AI_AGENTS.md#project-skills) describes them.
 Project requirements remain in [AGENTS.md](../AGENTS.md).
 Installing a skill does not authorize its scripts, network requests, delegation, or changes to user data.
 Use the host's applicable permission controls for those actions.
@@ -62,11 +60,11 @@ The lockfile describes upstream versions. It does not preserve local adaptations
 
 Local adaptations are stored as reversible patches against the upstream files.
 Each patch adds a "Project integration" section before the upstream text, unless the list below states otherwise.
-The adaptations keep the Toolchain safety limits and replace the Toolchain CLI items with asset pipeline items:
+The adaptations add safety limits and general project items:
 
 - [code-simplifier](skill-patches/code-simplifier.patch) replaces the upstream text.
   It removes React advice and the blanket preference against exception handlers.
-  It adds pipeline determinism, provenance, image-decoding, and contract invariants, limited refactoring scope, and verification requirements.
+  It adds determinism, input-limit, data format, and Vue rendering invariants, limited refactoring scope, and verification requirements.
 - [agents-md](skill-patches/agents-md.patch) preserves native imports and required project rules regardless of line-count targets.
   It treats upstream package manager and commit examples as examples.
 - [skill-scanner](skill-patches/skill-scanner.patch) describes command template syntax without a literal executable template in its entrypoint.
@@ -77,11 +75,11 @@ The adaptations keep the Toolchain safety limits and replace the Toolchain CLI i
   It replaces the issue-writer, audit-context-building, and adversarial-modeler integrations, which are not installed.
 - [supply-chain-risk-auditor](skill-patches/supply-chain-risk-auditor.patch) removes Write and Bash from `allowed-tools`.
   It permits the collector only on an explicit user request for a dependency audit, after a notice about the network requests and the `gh` token.
-  It states that model weights, ComfyUI custom nodes, and Python tool environments are outside the collector scope.
-- [find-bugs](skill-patches/find-bugs.patch) adds pipeline checklist items for the contract, package data, images, files, subprocesses, provenance, external effects, and terminal state.
+  It states that tools outside the lockfiles, such as external programs and Python tool environments, are outside the collector scope.
+- [find-bugs](skill-patches/find-bugs.patch) adds checklist items for data formats, input limits, files, subprocesses, Vue rendering, external effects, and terminal state.
   It adds a fallback base when `gh` is not available.
 - [gha-security-review](skill-patches/gha-security-review.patch) keeps the upstream threat model for exploitable findings.
-  It adds a separate section for deviations from the stricter project Actions rules, such as tag-pinned first-party actions or model downloads in CI.
+  It adds a separate section for deviations from the stricter project Actions rules, such as tag-pinned first-party actions or large downloads in CI.
   It forbids pushes, workflow runs, and payload tests. It removes Bash from `allowed-tools`.
 - [fp-check](skill-patches/fp-check.patch) replaces the plugin agents, which are not installed, with the current session or a general subagent.
   It limits executable PoCs to isolated temporary directories with synthetic data.
@@ -112,7 +110,7 @@ The checks covered these items:
 - The provenance manifest lists every file in each skill directory with its SHA-256 value.
 - Each Claude link resolves to a directory in `.agents/skills/`.
 
-The Toolchain security review of the installed files applies to the upstream content. The scanner and Gitleaks were not run again for this copy.
+The security review at installation applies to the upstream content. The scanner and Gitleaks were not run again for this copy.
 The dependency collector and its network requests were not executed.
 Its source includes registry lookups and a GitHub token lookup through `gh auth token`.
 Do not run it without an authorized dependency audit and an appropriate credential environment.
