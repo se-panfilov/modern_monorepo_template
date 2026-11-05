@@ -9,7 +9,7 @@ on:
   # The pr-rules workflow checks the pull request rules. It also runs after a change to the title or description.
   pull_request:
   push:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
     inputs:
       package:
