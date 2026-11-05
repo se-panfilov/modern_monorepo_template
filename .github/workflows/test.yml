@@ -9,7 +9,7 @@ on:
   # The pr-rules workflow checks the pull request rules. It also runs after a change to the title or description.
   pull_request:
   push:
-    branches: [master]
+    branches: [main, master]
   workflow_dispatch:
     inputs:
       package:
@@ -19,7 +19,6 @@ on:
         default: all
         options:
           - all
-          - rig-runtime
       dry_run:
         description: Show the plan only. Do not install or run tests.
         type: boolean

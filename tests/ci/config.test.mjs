@@ -86,6 +86,22 @@ test('a package tsconfig sets only local paths and its own alias', () => {
   for (const pattern of [/extends/, /strict/, /rootDir/, /outDir/, /@\/\*/, /@other/, /alias @demo\/\* is missing/, /include/, /node_modules/]) assert.match(problems, pattern);
 });
 
+test('a Vue package tsconfig extends the Vue base, includes .vue files, and resolves its alias without an extension', () => {
+  const vue = {
+    ...goodTsconfig,
+    extends: '../../configs/tsconfig.vue.json',
+    compilerOptions: { ...goodTsconfig.compilerOptions, paths: { '@demo/*': ['./src/*'] } },
+    include: ['src/**/*.ts', 'src/**/*.vue']
+  };
+  assert.deepEqual(packageTsconfigProblems('demo', vue), []);
+  const problems = packageTsconfigProblems('demo', { ...vue, compilerOptions: { ...vue.compilerOptions, paths: { '@demo/*': ['./src/*.ts'] } }, include: ['src/**/*.ts'] }).join('\n');
+  for (const pattern of [/paths\["@demo\/\*"\] must be \["\.\/src\/\*"\]/, /include must contain src\/\*\*\/\*\.vue/]) assert.match(problems, pattern);
+  assert.match(
+    packageTsconfigProblems('demo', { ...goodTsconfig, compilerOptions: { ...goodTsconfig.compilerOptions, paths: { '@demo/*': ['./src/*'] } } }).join('\n'),
+    /must be \["\.\/src\/\*\.ts"\]/
+  );
+});
+
 test('Vite and Vitest aliases must point to the package source', () => {
   const packageRoot = resolve('/repo/packages/demo');
   const alias = { '@demo': join(packageRoot, 'src') };

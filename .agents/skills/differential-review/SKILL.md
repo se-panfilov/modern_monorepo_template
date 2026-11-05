@@ -4,7 +4,7 @@ description: "Performs security-focused differential review of code changes. Ada
 allowed-tools: Read Grep Glob
 ---
 
-<!-- Adapted for AI Girls Generator from trailofbits/skills at 2be6433b39e009cd2b6fd3be1895f6b1faa5af9a. -->
+<!-- Adapted for this repository from trailofbits/skills at 2be6433b39e009cd2b6fd3be1895f6b1faa5af9a. -->
 
 # Differential Security Review
 

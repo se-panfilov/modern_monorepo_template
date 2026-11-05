@@ -5,7 +5,7 @@ allowed-tools: Read Glob Grep AskUserQuestion
 disable-model-invocation: true
 ---
 
-<!-- Adapted for AI Girls Generator from trailofbits/skills at 2be6433b39e009cd2b6fd3be1895f6b1faa5af9a. -->
+<!-- Adapted for this repository from trailofbits/skills at 2be6433b39e009cd2b6fd3be1895f6b1faa5af9a. -->
 
 # Second Opinion
 

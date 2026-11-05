@@ -3,7 +3,7 @@ name: find-bugs
 description: Find bugs, security vulnerabilities, and code quality issues in local branch changes. Use when asked to review changes, find bugs, security review, or audit code on the current branch.
 ---
 
-<!-- Adapted for AI Girls Generator from getsentry/skills at d12f250460ffd961f549dbebf7eeb0cf4afd4c2e. -->
+<!-- Adapted for this repository from getsentry/skills at d12f250460ffd961f549dbebf7eeb0cf4afd4c2e. -->
 
 # Find Bugs
 
@@ -11,17 +11,16 @@ description: Find bugs, security vulnerabilities, and code quality issues in loc
 
 Read [AGENTS.md](../../../AGENTS.md) before applying the upstream workflow below.
 This skill is read-only. Do not edit files, commit, push, or post review comments.
-If `gh` is not available or not authenticated, use `git diff origin/master...HEAD`. Use the pull request base when it is different.
+If `gh` is not available or not authenticated, use `git diff origin/<default-branch>...HEAD`, where the default branch is `main` or `master`. Use the pull request base when it is different.
 Apply the web items in Phase 3 only to code that has those surfaces.
-Also examine each changed pipeline file for these items:
+Also examine each changed project file for these items:
 
-* [ ] **Contract**: no per-character change to bones, slots, draw order, pivots, or animations. Contract and package versions are checked, not assumed.
-* [ ] **Package data**: names match the contract pattern, paths have no `..` or leading `/`, and every slot has a `present` or `absent_by_design` status.
-* [ ] **Images**: size and pixel-count limits before decoding, explicit color space and alpha mode (straight or premultiplied), and no silent resampling.
-* [ ] **Files**: path validation, symbolic links, overwrite behavior, and atomic writes. An approved character package is not replaced silently.
-* [ ] **Subprocesses**: argument arrays only, no user data in shell text, and an isolated environment for Python tools and Spine CLI.
-* [ ] **Provenance**: model file hashes, seeds, workflow files, and tool versions are recorded for each generated result.
-* [ ] **Network and external effects**: no model download, paid API call, GPU rental, data transfer, publication, or push without explicit authorization.
+* [ ] **Data formats**: untrusted JSON and other input is validated at run time against the schema. Format versions are checked, not assumed.
+* [ ] **Input limits**: size, count, and depth limits before parsing or decoding untrusted input.
+* [ ] **Files**: path validation, symbolic links, overwrite behavior, and atomic writes. Approved output is not replaced silently.
+* [ ] **Subprocesses**: argument arrays only, no user data in shell text, and an isolated environment for external tools.
+* [ ] **Vue UI**: no `v-html` or dynamic component names with untrusted data. URLs from data are checked before use in `href` or `src`.
+* [ ] **Network and external effects**: no download, paid API call, data transfer, publication, or push without explicit authorization.
 * [ ] **Terminal**: input handlers restored after success, cancellation, and errors. Machine output has no colors or prompts.
 
 Write the report in English. A human decides how to handle each finding.

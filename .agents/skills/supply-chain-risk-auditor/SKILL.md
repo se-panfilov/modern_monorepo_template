@@ -4,7 +4,7 @@ description: "Audits a project's dependencies for supply-chain risk: version-mat
 allowed-tools: Read Glob Grep
 ---
 
-<!-- Adapted for AI Girls Generator from trailofbits/skills at 2be6433b39e009cd2b6fd3be1895f6b1faa5af9a. -->
+<!-- Adapted for this repository from trailofbits/skills at 2be6433b39e009cd2b6fd3be1895f6b1faa5af9a. -->
 
 # Supply Chain Risk Auditor
 
@@ -16,7 +16,7 @@ Run the collector only when the user explicitly asks for a dependency audit in t
 Before the run, tell the user that the collector sends dependency names to public registries, advisory databases, and the GitHub API, and reads the `gh` token.
 Do not install `uv`, Python packages, or other tools. Report the missing setup.
 Write outputs only in a temporary directory outside the repository.
-The collector does not examine model weights, ComfyUI custom nodes, or Python tool environments. Report them as not examined, and refer to [the model license registry](../../../docs/MODEL_LICENSES.md).
+The collector does not examine tools outside the lockfiles, such as external programs or Python tool environments. Report them as not examined.
 Write the report in English. A human decides how to handle each finding.
 
 ## Upstream workflow

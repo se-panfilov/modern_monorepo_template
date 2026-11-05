@@ -3,7 +3,7 @@ name: grilling
 description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
 ---
 
-<!-- Adapted for AI Girls Generator from mattpocock/skills at a496f5513d4a4cf889bc48e189e579f4b0bdf6aa. -->
+<!-- Adapted for this repository from mattpocock/skills at a496f5513d4a4cf889bc48e189e579f4b0bdf6aa. -->
 
 ## Project integration
 

@@ -6,6 +6,7 @@ import js from '@eslint/js';
 import { defineConfig } from 'eslint/config';
 import prettier from 'eslint-config-prettier/flat';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import pluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -20,7 +21,7 @@ const packages = existsSync(packagesDirectory)
   : [];
 const cyrillic = '[\\u0400-\\u04FF]';
 
-// The npm package name of a package directory. The name scope is an open decision (D21), so it is read from package.json.
+// The npm package name of a package directory. Each project selects its own name scope, so it is read from package.json.
 function packageName(dir) {
   try {
     const name = JSON.parse(readFileSync(new URL(`${dir}/package.json`, packagesDirectory), 'utf8')).name;
@@ -112,7 +113,7 @@ const englishComments = {
 export default defineConfig([
   { ignores: ['**/dist/**', '**/node_modules/**', '**/coverage/**', '**/reports/**', '.agents/**', '.claude/**', '.codex/**', '.gemini/**'] },
   {
-    files: ['**/*.{js,mjs,ts}'],
+    files: ['**/*.{js,mjs,ts,vue}'],
     extends: [js.configs.recommended],
     languageOptions: { globals: globals.node },
     plugins: { 'simple-import-sort': simpleImportSort, project: { rules: { 'english-comments': englishComments } } },
@@ -134,6 +135,21 @@ export default defineConfig([
       '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
       '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
       '@typescript-eslint/naming-convention': ['error', { selector: 'typeAlias', format: ['PascalCase'] }]
+    }
+  },
+  {
+    // Vue single-file components: Vue rules and the TypeScript rules that do not need type information.
+    // vue-tsc checks the types of .vue files in the package typecheck script.
+    files: ['**/*.vue'],
+    extends: [tseslint.configs.recommended, pluginVue.configs['flat/recommended']],
+    languageOptions: { globals: globals.browser, parserOptions: { parser: tseslint.parser, extraFileExtensions: ['.vue'] } },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' }],
+      '@typescript-eslint/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
+      'vue/block-lang': ['error', { script: { lang: 'ts' } }],
+      'vue/component-api-style': ['error', ['script-setup']],
+      'vue/no-v-html': 'error',
+      'vue/require-typed-ref': 'error'
     }
   },
   {
@@ -160,8 +176,8 @@ export default defineConfig([
     }
   },
   ...packages.flatMap((dir) => [
-    { files: [`packages/${dir}/**/*.{js,mjs,ts}`], rules: { 'no-restricted-imports': restrictedImports({ dir }) } },
-    { files: [`packages/${dir}/src/**/*.ts`], rules: { 'no-restricted-imports': restrictedImports({ dir, source: true }) } }
+    { files: [`packages/${dir}/**/*.{js,mjs,ts,vue}`], rules: { 'no-restricted-imports': restrictedImports({ dir }) } },
+    { files: [`packages/${dir}/src/**/*.{ts,vue}`], rules: { 'no-restricted-imports': restrictedImports({ dir, source: true }) } }
   ]),
   prettier
 ]);

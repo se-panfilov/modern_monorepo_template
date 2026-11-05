@@ -3,7 +3,7 @@ name: writing-for-agents
 description: Writing documents for agents. Use when creating or editing skills, or modifying AGENTS.md or CLAUDE.md.
 ---
 
-<!-- Adapted for AI Girls Generator from mattpocock/skills at a496f5513d4a4cf889bc48e189e579f4b0bdf6aa. -->
+<!-- Adapted for this repository from mattpocock/skills at a496f5513d4a4cf889bc48e189e579f4b0bdf6aa. -->
 
 ## Project integration
 

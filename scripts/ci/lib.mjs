@@ -25,8 +25,8 @@ export function readJson(path) {
 }
 
 // Read and validate every package in packages/. An unexpected entry stops the workflow instead of being skipped.
-// An empty list is valid: the repository has no package before the first pipeline stage needs code.
-// The package name is not fixed here, because the name scope is an open decision (D21 in docs/DECISIONS.md).
+// An empty list is valid: a new repository from the template has no package yet.
+// The package name is not fixed here, because each project selects its own npm scope.
 export function listPackages(base = root) {
   const packagesDir = join(base, 'packages');
   if (!existsSync(packagesDir)) return [];

@@ -4,7 +4,7 @@
  description: Creates and maintains concise AGENTS.md and CLAUDE.md project instruction files. Use when asked to create AGENTS.md, update AGENTS.md, maintain agent docs, set up CLAUDE.md, document repository agent conventions, or keep coding-agent instructions minimal and reference-backed.
  ---
  
-+<!-- Adapted for AI Girls Generator from getsentry/skills at d12f250460ffd961f549dbebf7eeb0cf4afd4c2e. -->
++<!-- Adapted for this repository from getsentry/skills at d12f250460ffd961f549dbebf7eeb0cf4afd4c2e. -->
 +
  # Maintaining AGENTS.md
  
