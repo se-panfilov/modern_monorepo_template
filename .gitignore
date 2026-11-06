@@ -37,7 +37,7 @@ __temp*
 # Playwright
 /playwright/.cache/
 
-# Model weights and layered editor files stay out of Git until the storage decision (AGENTS.md, Pipeline rules)
+# Model weights and layered editor files stay out of Git until a human storage decision (AGENTS.md, Project rules)
 **/*.safetensors
 **/*.ckpt
 **/*.pt
@@ -49,6 +49,12 @@ __temp*
 **/*.ora
 **/*.kra
 
+# Secrets and environment files. Commit only a documented .env.example without real values.
+.env
+.env.*
+!.env.example
+
 # Personal agent settings and instructions
 CLAUDE.local.md
+GEMINI.local.md
 .claude/settings.local.json

@@ -7,7 +7,7 @@ description: Scan agent skills for security issues. Use when asked to "scan a sk
 allowed-tools: Read Grep Glob
 ---
 
-<!-- Adapted for AI Girls Generator: describe pre-prompt syntax without an executable template literal. -->
+<!-- Adapted for this repository: describe pre-prompt syntax without an executable template literal. -->
 
 # Skill Security Scanner
 

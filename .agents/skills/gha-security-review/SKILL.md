@@ -9,7 +9,7 @@ Attack patterns and real-world examples sourced from the HackerBot Claw campaign
 by StepSecurity (2025): https://www.stepsecurity.io/blog/hackerbot-claw-github-actions-exploitation
 -->
 
-<!-- Adapted for AI Girls Generator from getsentry/skills at d12f250460ffd961f549dbebf7eeb0cf4afd4c2e. -->
+<!-- Adapted for this repository from getsentry/skills at d12f250460ffd961f549dbebf7eeb0cf4afd4c2e. -->
 
 # GitHub Actions Security Review
 
@@ -25,7 +25,7 @@ The project rules are stricter. Report a deviation from them in a separate "Poli
 - A job token permission that the job does not need, or a checkout without `persist-credentials: false`.
 - An input `${{ }}` expression in `run` text, including `workflow_dispatch` inputs.
 - A publication token or secret in the repository or workflows.
-- A workflow that downloads model weights, calls a paid API, or uploads character assets without an explicit human decision.
+- A workflow that downloads large external artifacts, calls a paid API, or uploads project data without an explicit human decision.
 
 Write the report in English. A human decides how to handle each finding.
 

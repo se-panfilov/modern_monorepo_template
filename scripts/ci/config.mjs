@@ -29,6 +29,9 @@ export const requiredCompilerOptions = {
 };
 // Package tsconfig files set only local paths. Other compiler options come from the shared base.
 const localCompilerOptions = new Set(['rootDir', 'outDir', 'paths']);
+// Shared bases for package tsconfig files: Node.js packages and Vue packages. The Vue base extends the Node.js base.
+const nodeBase = '../../configs/tsconfig.base.json';
+const vueBase = '../../configs/tsconfig.vue.json';
 // Scripts from the new-package skill. A package with a bin entry also needs `start`.
 const requiredScripts = ['build', 'typecheck', 'test', 'lint', 'format:check'];
 const installHooks = ['preinstall', 'install', 'postinstall', 'prepare', 'preprepare', 'postprepare'];
@@ -38,7 +41,7 @@ const ruleFileNames = new Set(['agents.md', 'skill.md', 'claude.md', 'gemini.md'
 const lockfiles = new Set(['package-lock.json', 'npm-shrinkwrap.json', 'yarn.lock', 'pnpm-lock.yaml', 'bun.lockb', 'bun.lock']);
 const vendoredSkills = /^\.(agents|claude|codex|gemini)\/skills\//;
 const fullSha = /^[^\s@]+@[0-9a-f]{40}$/;
-// Generated images, editor files, and model weights stay out of Git until the storage decision is made (AGENTS.md, Pipeline rules).
+// Images, media, archives, and model weights stay out of Git until a human decides how to store them (AGENTS.md, Project rules).
 const binaryAsset = /\.(png|jpe?g|webp|gif|bmp|tiff?|psd|psb|ora|kra|exr|safetensors|ckpt|pt|pth|bin|onnx|gguf|zip|tgz|gz|7z)$/i;
 // Repository text is in English. These files are vendored or record upstream bytes, so they are not checked.
 const languageExempt = [vendoredSkills, /^docs\/skill-patches\//, /^docs\/skill-provenance\.json$/, /^skills-lock\.json$/, /^package-lock\.json$/];
@@ -53,20 +56,22 @@ export const binaryAssetAllowlist = [];
 // Tools that a skill can use without a permission prompt in Claude Code. Bash, Write, Edit, and network tools follow the host permission rules.
 export const skillToolAllowlist = ['Read', 'Grep', 'Glob', 'LSP', 'Task', 'AskUserQuestion', 'TaskCreate', 'TaskUpdate', 'TaskList', 'TaskGet'];
 // Skills that this repository maintains. All other skills in .agents/skills must be in docs/skill-provenance.json.
-export const localSkills = ['asset-factory', 'new-package'];
+export const localSkills = ['new-package', 'project-workflow'];
 // Agent host files that can run commands, grant tool permissions, start MCP servers, or replace AGENTS.md.
 // A pull request can add them without a review of the instruction files. Add an entry only after a human decision.
 export const hostConfigAllowlist = [];
-const hostConfig = [
-  /^\.claude\/settings(\.local)?\.json$/,
-  /^\.mcp\.json$/,
-  /^\.gemini\/settings\.json$/,
-  /^\.codex\/config\.toml$/,
-  /^\.cursor\//,
-  /^\.vscode\/(tasks|settings|mcp)\.json$/,
+// Paths are case-insensitive, because the macOS file system is case-insensitive.
+export const hostConfigPatterns = [
+  /^\.claude\/settings(\.local)?\.json$/i,
+  /^\.mcp\.json$/i,
+  /^\.gemini\/settings\.json$/i,
+  /^\.codex\/config\.toml$/i,
+  /^\.cursor\//i,
+  /^\.vscode\/(tasks|settings|mcp)\.json$/i,
   /(^|\/)AGENTS\.override\.md$/i,
   /(^|\/)(CLAUDE|GEMINI)\.local\.md$/i,
-  /(^|\/)\.(cursorrules|windsurfrules|clinerules)$/
+  /(^|\/)\.(cursorrules|windsurfrules)$/i,
+  /(^|\/)\.clinerules(\/|$)/i
 ];
 // Runtime dependencies that a human approved for each package, by package name. Add an entry only after a dependency review.
 export const runtimeDependencyAllowlist = {};
@@ -94,25 +99,32 @@ export function baseTsconfigProblems(config) {
     .map(([key, value]) => `configs/tsconfig.base.json: compilerOptions.${key} must be ${JSON.stringify(value)}.`);
 }
 
+// A Vue package extends the Vue base. Its sources include .vue files, and its alias also resolves them.
+export const isVuePackage = (config) => config?.extends === vueBase;
+
 // Package TypeScript configuration: local paths only and one package alias.
 export function packageTsconfigProblems(dir, config) {
   const file = `packages/${dir}/tsconfig.json`;
   const problems = [];
   const options = isObject(config?.compilerOptions) ? config.compilerOptions : {};
-  if (config?.extends !== '../../configs/tsconfig.base.json') problems.push(`${file}: extends must point to ../../configs/tsconfig.base.json.`);
+  const vue = isVuePackage(config);
+  const aliasTarget = vue ? ['./src/*'] : ['./src/*.ts'];
+  if (config?.extends !== nodeBase && !vue) problems.push(`${file}: extends must point to ${nodeBase} or ${vueBase}.`);
   for (const key of Object.keys(options)) if (!localCompilerOptions.has(key)) problems.push(`${file}: set compilerOptions.${key} only in configs/tsconfig.base.json.`);
   if (options.rootDir !== '.') problems.push(`${file}: rootDir must be ".".`);
   if (options.outDir !== 'dist') problems.push(`${file}: outDir must be "dist".`);
   const paths = isObject(options.paths) ? options.paths : {};
   for (const [key, value] of Object.entries(paths)) {
     if (key === `@${dir}/*`) {
-      if (!same(value, ['./src/*.ts'])) problems.push(`${file}: paths["@${dir}/*"] must be ["./src/*.ts"].`);
+      if (!same(value, aliasTarget)) problems.push(`${file}: paths["@${dir}/*"] must be ${JSON.stringify(aliasTarget)}.`);
     } else {
       problems.push(`${file}: the alias ${safe(key)} is not permitted. Use only @${dir}/*. Use workspace dependencies for other packages.`);
     }
   }
   if (!(`@${dir}/*` in paths)) problems.push(`${file}: the alias @${dir}/* is missing.`);
-  if (!Array.isArray(config?.include) || !config.include.includes('src/**/*.ts')) problems.push(`${file}: include must contain src/**/*.ts.`);
+  for (const pattern of vue ? ['src/**/*.ts', 'src/**/*.vue'] : ['src/**/*.ts']) {
+    if (!Array.isArray(config?.include) || !config.include.includes(pattern)) problems.push(`${file}: include must contain ${pattern}.`);
+  }
   for (const excluded of ['dist', 'node_modules']) {
     if (!Array.isArray(config?.exclude) || !config.exclude.includes(excluded)) problems.push(`${file}: exclude must contain ${excluded}.`);
   }
@@ -205,11 +217,11 @@ export function structureProblems(files) {
     if (/\.(sh|bash|zsh)$/.test(name) && !vendoredSkills.test(path) && !shellScriptAllowlist.includes(path)) {
       problems.push(`${safe(path)}: the Bash script is not in the permitted list. Use Node.js or document the exception.`);
     }
-    if (hostConfig.some((pattern) => pattern.test(path)) && !hostConfigAllowlist.includes(path)) {
+    if (hostConfigPatterns.some((pattern) => pattern.test(path)) && !hostConfigAllowlist.includes(path)) {
       problems.push(`${safe(path)}: agent host settings and override instructions can run commands or change permissions. Add the file only after a human decision.`);
     }
     if (binaryAsset.test(name) && !vendoredSkills.test(path) && !binaryAssetAllowlist.includes(path)) {
-      problems.push(`${safe(path)}: images, editor files, archives, and model weights stay out of Git until the storage decision. Use synthetic test images made at run time.`);
+      problems.push(`${safe(path)}: images, media, archives, and model weights need a human storage decision. Add the path to binaryAssetAllowlist after it, or make test data at run time.`);
     }
   }
   return problems;
@@ -351,6 +363,10 @@ export function skillProblems(base = root) {
 }
 
 const indentOf = (line) => line.length - line.trimStart().length;
+const isComment = (line) => /^\s*#/.test(line);
+// Remove a trailing comment. A `#` after a space starts a YAML comment outside quotes. Values in this check do not quote `#`.
+const withoutComment = (line) => line.replace(/(^|\s)#.*$/, '');
+const permissionsKey = /^(\s*)['"]?permissions['"]?\s*:(.*)$/;
 
 // YAML forms of an event name: a key, a block list item, a flow list on the `on` line, or a flow list continuation. Quotes are optional.
 function eventPatterns(event) {
@@ -359,19 +375,26 @@ function eventPatterns(event) {
 }
 
 // GitHub Actions rules from AGENTS.md. The parser reads the line structure of the workflow files in this repository.
+// It is not a full YAML parser: anchors, aliases, multi-line keys, and other unusual forms can bypass it.
 export function workflowRuleProblems(file, text) {
   const lines = text.split(/\r?\n/);
-  const code = lines.filter((line) => !line.trimStart().startsWith('#'));
+  const code = lines.filter((line) => !isComment(line));
   const problems = [];
-  const top = lines.findIndex((line) => /^['"]?permissions['"]?\s*:/.test(line));
+  const top = lines.findIndex((line) => permissionsKey.exec(line)?.[1] === '');
   if (top < 0) problems.push(`${file}: top-level permissions are missing.`);
   else {
     // Top-level permissions are read-only. A job that needs write access sets it in its own permissions block.
-    const end = lines.findIndex((line, position) => position > top && line.trim() !== '' && !line.trimStart().startsWith('#') && indentOf(line) === 0);
-    const block = [lines[top] ?? '', ...lines.slice(top + 1, end < 0 ? lines.length : end)];
-    if (block.some((line) => /:\s*\{?.*\bwrite\b/.test(line.replace(/#.*$/, '')))) problems.push(`${file}: top-level permissions must be read-only. Give write access only to the job that needs it.`);
+    const inline = withoutComment(permissionsKey.exec(lines[top] ?? '')?.[2] ?? '').trim();
+    const end = lines.findIndex((line, position) => position > top && line.trim() !== '' && !isComment(line) && indentOf(line) === 0);
+    const block = inline === '' ? lines.slice(top + 1, end < 0 ? lines.length : end).filter((line) => !isComment(line)) : [];
+    if ([inline, ...block].some((part) => /\bwrite\b/.test(withoutComment(part))))
+      problems.push(`${file}:${top + 1}: top-level permissions must be read-only. Give write access only to the job that needs it.`);
   }
-  if (code.some((line) => /^\s*permissions\s*:\s*['"]?write-all\b/.test(line))) problems.push(`${file}: permissions: write-all is not permitted.`);
+  // write-all is rejected at each level, also with a quoted key.
+  lines.forEach((line, index) => {
+    const match = permissionsKey.exec(line);
+    if (match && /^['"]?write-all\b/.test(withoutComment(match[2] ?? '').trim())) problems.push(`${file}:${index + 1}: permissions: write-all is not permitted.`);
+  });
   for (const event of forbiddenWorkflowEvents) {
     const patterns = eventPatterns(event);
     if (code.some((line) => patterns.some((pattern) => pattern.test(line)))) problems.push(`${file}: the ${event} event is not permitted.`);

@@ -4,7 +4,7 @@ description: "Systematically verifies suspected security bugs to eliminate false
 allowed-tools: Read Grep Glob LSP Task AskUserQuestion TaskCreate TaskUpdate TaskList TaskGet
 ---
 
-<!-- Adapted for AI Girls Generator from trailofbits/skills at 2be6433b39e009cd2b6fd3be1895f6b1faa5af9a. -->
+<!-- Adapted for this repository from trailofbits/skills at 2be6433b39e009cd2b6fd3be1895f6b1faa5af9a. -->
 
 # False Positive Check
 
