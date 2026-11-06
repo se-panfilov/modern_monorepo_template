@@ -36,7 +36,7 @@ Do the steps below one time, in a new repository made from the template.
 | Approve a binary file, such as a favicon  | `binaryAssetAllowlist` in [scripts/ci/config.mjs](../scripts/ci/config.mjs).                                                   |
 | Approve an agent host settings file       | `hostConfigAllowlist` in [scripts/ci/config.mjs](../scripts/ci/config.mjs).                                                    |
 | Remove Vue support from a backend project | Remove the Vue development dependencies, `configs/tsconfig.vue.json`, the Vue helpers, and the Vue block in the ESLint config. |
-| Change the default branch name            | The `push` branches in `.github/workflows/`. The checks already protect both `master` and `main`.                              |
+| Use a default branch other than `main`    | The `push` branches in `.github/workflows/`. The Git hooks protect both `master` and `main`.                                   |
 | Add or remove a branch type               | `branchTypes` in [scripts/ci/rules.mjs](../scripts/ci/rules.mjs), AGENTS.md, and [Enforced rules](ENFORCED_RULES.md).          |
 | Permit text in another language           | The `cyrillic` checks in `configs/eslint.config.mjs` and `scripts/ci/config.mjs`, and the writing rules. A human decision.     |
 | Publish packages to npm                   | Not included. Publication needs a release workflow, a token policy, and a human decision. All packages are private.            |

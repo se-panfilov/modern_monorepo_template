@@ -1,14 +1,14 @@
 # GitHub Actions
 
-The repository has four GitHub Actions workflows. Push workflows run on `main` and `master`, so that the template works with both default branch names.
+The repository has four GitHub Actions workflows. The default branch is `main`. Push workflows run only on `main`.
 The template has no build or release workflow, because all packages are private. Publication needs a separate human decision.
 
 | Workflow                                      | Start                                                          | Result                                                                                                     |
 | --------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| [Tests](../.github/workflows/test.yml)        | Pull request, push to `master`, manual start.                  | Formatting, lint, configuration and workflow checks, and package type checks and tests on macOS and Linux. |
+| [Tests](../.github/workflows/test.yml)        | Pull request, push to `main`, manual start.                    | Formatting, lint, configuration and workflow checks, and package type checks and tests on macOS and Linux. |
 | [PR rules](../.github/workflows/pr-rules.yml) | Pull request, also after a change to the title or description. | Branch name, description, commit messages, versions, and lockfile changes.                                 |
-| [Secrets](../.github/workflows/secrets.yml)   | Pull request, push to `master`, manual start.                  | Lefthook validation, hook integration tests, and Gitleaks scans of the history and the working files.      |
-| [CodeQL](../.github/workflows/codeql.yml)     | Pull request, push to `master`, weekly, manual start.          | Static security analysis of JavaScript, TypeScript, and the workflows.                                     |
+| [Secrets](../.github/workflows/secrets.yml)   | Pull request, push to `main`, manual start.                    | Lefthook validation, hook integration tests, and Gitleaks scans of the history and the working files.      |
+| [CodeQL](../.github/workflows/codeql.yml)     | Pull request, push to `main`, weekly, manual start.            | Static security analysis of JavaScript, TypeScript, and the workflows.                                     |
 
 See [Enforced rules](ENFORCED_RULES.md) for the rules that the jobs check. See [Git hooks and secret checks](GIT_HOOKS.md) for the Secrets workflow.
 
