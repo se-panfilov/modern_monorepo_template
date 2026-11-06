@@ -62,7 +62,7 @@ Limits:
 
 ### Manual version pins
 
-Update these pins manually. A Dependabot configuration, if a project adds one, updates only the actions in `uses:` and the npm packages:
+The repository has no automatic dependency updates. Update the actions in `uses:` and the npm packages manually, and also these pins:
 
 | Pin                         | Location                                                        | Check                   |
 | --------------------------- | --------------------------------------------------------------- | ----------------------- |
@@ -86,16 +86,6 @@ Code scanning is available without a paid plan for public repositories. A privat
 
 A human decides how to handle each alert. Do not dismiss an alert without a recorded reason.
 CodeQL does not replace the separate security review in AGENTS.md.
-
-## Dependabot
-
-The template has no Dependabot configuration. To add version updates, create `.github/dependabot.yml` for the `npm` and `github-actions` ecosystems in the root directory.
-Use a cooldown of at least 7 days, the same as `min-release-age` in `.npmrc`, and keep full commit SHAs with a version comment for actions.
-
-Dependabot cannot change its `dependabot/` branch prefix or use the pull request template.
-For this reason, `pr-rules` does not check the branch name and the description when the author is `dependabot[bot]` and the branch name starts with `dependabot/`.
-The commit, version, lockfile, and `npm audit` checks apply to Dependabot too.
-A human examines each Dependabot pull request and merges it.
 
 ## Add, remove, or rename a package
 

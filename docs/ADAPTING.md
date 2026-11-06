@@ -40,7 +40,6 @@ Do the steps below one time, in a new repository made from the template.
 | Add or remove a branch type               | `branchTypes` in [scripts/ci/rules.mjs](../scripts/ci/rules.mjs), AGENTS.md, and [Enforced rules](ENFORCED_RULES.md).          |
 | Permit text in another language           | The `cyrillic` checks in `configs/eslint.config.mjs` and `scripts/ci/config.mjs`, and the writing rules. A human decision.     |
 | Publish packages to npm                   | Not included. Publication needs a release workflow, a token policy, and a human decision. All packages are private.            |
-| Add Dependabot                            | Add `.github/dependabot.yml`. The PR rules already skip the branch name and description checks for `dependabot[bot]`.          |
 
 Do not weaken a check only to make the template fit. If a rule does not fit the project, change the rule, its documentation, and its tests together.
 
