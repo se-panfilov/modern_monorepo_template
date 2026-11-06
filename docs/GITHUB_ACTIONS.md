@@ -1,7 +1,7 @@
 # GitHub Actions
 
-The repository has four GitHub Actions workflows and a Dependabot configuration. They come from the Toolchain repository.
-The Toolchain Build and Release workflows are not copied, because all packages are private. Publication needs a separate human decision.
+The repository has four GitHub Actions workflows. Push workflows run on `main` and `master`, so that the template works with both default branch names.
+The template has no build or release workflow, because all packages are private. Publication needs a separate human decision.
 
 | Workflow                                      | Start                                                          | Result                                                                                                     |
 | --------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -53,7 +53,7 @@ Tests use Node.js 26, the latest patch version. CI does not check the minimum en
 | Trigger events       | No `pull_request_target`, `workflow_run`, `issue_comment`, pull request review, or discussion events. `npm run check:config` rejects them.                                         |
 | Input handling       | Inputs go to scripts through environment variables, not through `${{ }}` in shell text.                                                                                            |
 | Dependency scripts   | `npm ci` uses `--ignore-scripts`, and `.npmrc` sets `ignore-scripts=true`. No dependency cache is used.                                                                            |
-| Pipeline assets      | No workflow downloads model weights, calls a paid API, or uploads character assets.                                                                                                |
+| External effects     | No workflow downloads large external artifacts, calls a paid API, or uploads project data.                                                                                         |
 
 Limits:
 
@@ -62,7 +62,7 @@ Limits:
 
 ### Manual version pins
 
-Dependabot updates only the actions in `uses:` and the npm packages. Update these pins manually:
+Update these pins manually. A Dependabot configuration, if a project adds one, updates only the actions in `uses:` and the npm packages:
 
 | Pin                         | Location                                                        | Check                   |
 | --------------------------- | --------------------------------------------------------------- | ----------------------- |
@@ -77,11 +77,11 @@ Select a Node.js version that is at least 7 days old, as `min-release-age` in `.
 The CodeQL workflow analyzes TypeScript, JavaScript, and the GitHub Actions workflows with the `security-extended` query suite and the [configuration file](../.github/codeql/codeql-config.yml).
 Generated output, dependencies, and vendored skills are outside the analysis. The workflow does not install dependencies. It uses `build-mode: none`.
 
-The repository is public, so code scanning is available without a paid plan. Do these steps one time in the repository settings:
+Code scanning is available without a paid plan for public repositories. A private repository needs GitHub Advanced Security, or remove the CodeQL workflow. Do these steps one time in the repository settings:
 
 1. Open **Settings → Advanced Security** (the section can also be named **Code security**).
 2. Find **CodeQL analysis**. Make sure that **default setup** is not enabled. GitHub rejects workflow results when default setup is enabled.
-3. Merge the workflow to `master`. The first push run makes the baseline.
+3. Merge the workflow to the default branch. The first push run makes the baseline.
 4. Open **Security → Code scanning** and examine the alerts.
 
 A human decides how to handle each alert. Do not dismiss an alert without a recorded reason.
@@ -89,16 +89,8 @@ CodeQL does not replace the separate security review in AGENTS.md.
 
 ## Dependabot
 
-The [Dependabot configuration](../.github/dependabot.yml) makes version update pull requests one time each week, on Monday.
-
-| Ecosystem        | Directory | Settings                                                                                                       |
-| ---------------- | --------- | -------------------------------------------------------------------------------------------------------------- |
-| `npm`            | `/`       | The root `package.json` and `package-lock.json` for all workspaces. Exact versions. Minor and patch in one PR. |
-| `github-actions` | `/`       | The workflows in `.github/workflows/`. Full commit SHAs with a version comment. All updates in one PR.         |
-
-- A new version must be 7 days old before Dependabot proposes it. A major npm version must be 14 days old.
-- Security updates do not wait. Enable them in **Settings → Advanced Security → Dependabot security updates**.
-- Commit messages start with `chore(deps)` or `chore(deps-dev)`.
+The template has no Dependabot configuration. To add version updates, create `.github/dependabot.yml` for the `npm` and `github-actions` ecosystems in the root directory.
+Use a cooldown of at least 7 days, the same as `min-release-age` in `.npmrc`, and keep full commit SHAs with a version comment for actions.
 
 Dependabot cannot change its `dependabot/` branch prefix or use the pull request template.
 For this reason, `pr-rules` does not check the branch name and the description when the author is `dependabot[bot]` and the branch name starts with `dependabot/`.

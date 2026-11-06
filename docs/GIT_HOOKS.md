@@ -1,6 +1,6 @@
 # Git hooks and secret checks
 
-The repository uses Lefthook 2.2.2 as a root development dependency. The hooks and the scripts come from the Toolchain repository. Their messages are in English.
+The repository uses Lefthook 2.2.2 as a root development dependency. The hook messages are in English.
 The [configuration](../lefthook.yml) runs pre-commit checks in parallel.
 It checks the branch, formatting, and secrets without automatic fixes, staging, or stashing.
 The commit-msg hook rejects links to AI agent sessions. The pre-push hook rejects a push to `master` or `main`.

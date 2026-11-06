@@ -10,12 +10,12 @@ Do not claim full conformance from a sentence counter or an unchecked vocabulary
 - Write the CLI interface, user-facing task reports, and agent reports in English.
 - Keep commands, paths, identifiers, quoted software labels, and license text exact.
 - Write test names, test data, and test comments in English. Tests are not user interaction.
-- Write identifiers in contract and package data in lowercase ASCII `snake_case`. Use only ASCII characters in file names, slot names, and attachment names.
+- Write identifiers in documented data formats in lowercase ASCII `snake_case`. Use only ASCII characters in file names and data keys.
 
 ## Terms
 
 Use the terms in [the glossary](GLOSSARY.md). Use one term for each concept.
-Do not use "layer", "part", "slot", and "attachment" as synonyms. Each term has a different meaning.
+Do not use two terms as synonyms when the glossary gives them different meanings.
 
 ## Status marks
 
@@ -50,8 +50,8 @@ Distinguish a verified result from a recommendation or an untested assumption.
 
 ## Licenses and costs
 
-When a document names a tool or a model, give its license. Use the labels from [the model license registry](MODEL_LICENSES.md).
-Do not call a model "open source" when its license has use-based restrictions. Use "open weights" and name the license.
+When a document names a tool, a library, or a model, give its license.
+Do not call software or a model "open source" when its license has use-based restrictions. Name the license.
 Give prices only with the date of the check.
 
 ## Commits and pull requests
