@@ -105,6 +105,7 @@ These rules apply until a project replaces them:
 - Keep shared code small. Add no framework or workspace manager without a concrete need.
 - Prefer Node.js built-ins and Web APIs. Evaluate each added dependency's need, license, native binaries, and security impact.
 - Follow `.editorconfig`. Edit source, not generated output.
+- Use JetBrains WebStorm as the IDE. Keep shared IDE settings in `.idea/` as described in [WebStorm setup](docs/WEBSTORM.md). Do not add settings for other editors.
 - Install once from the root with `npm ci --ignore-scripts` and the root lockfile.
 - Keep shared development dependencies in the private root package and shared settings in `configs/`.
 - Keep workspace metadata, runtime dependencies, aliases, and entry points in each package. Select packages with `--workspace <name>`.

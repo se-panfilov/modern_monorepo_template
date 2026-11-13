@@ -183,6 +183,7 @@ test('repository structure rejects agent host settings and override instruction 
     '.codex/config.toml',
     '.cursor/rules/demo.mdc',
     '.vscode/tasks.json',
+    '.idea/watcherTasks.xml',
     'AGENTS.override.md',
     'packages/demo/AGENTS.override.md',
     'CLAUDE.local.md',
