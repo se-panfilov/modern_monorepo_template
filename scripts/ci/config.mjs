@@ -67,6 +67,7 @@ export const hostConfigPatterns = [
   /^\.gemini\/settings\.json$/i,
   /^\.codex\/config\.toml$/i,
   /^\.cursor\//i,
+  /^\.vscode\/(tasks|settings|mcp)\.json$/i,
   /^\.idea\/watcherTasks\.xml$/i,
   /^\.junie\/mcp\//i,
   /(^|\/)AGENTS\.override\.md$/i,

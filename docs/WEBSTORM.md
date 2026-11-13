@@ -1,6 +1,6 @@
 # WebStorm setup
 
-The project uses JetBrains WebStorm as the IDE. The repository does not contain settings for other editors.
+The project uses JetBrains WebStorm as the IDE. The repository does not contain settings for other editors. `.gitignore`, `.aiignore`, and the host settings check still cover other editor files.
 WebStorm reads the shared settings in `.idea/` when you open the repository root as a project.
 
 ## Shared settings in Git
