@@ -24,14 +24,12 @@ __temp*
 *.tgz
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# WebStorm: keep only the shared settings in Git. See docs/WEBSTORM.md.
+.idea/*
+!.idea/runConfigurations/
+!.idea/jsLinters/
+!.idea/prettier.xml
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
 
 # Playwright

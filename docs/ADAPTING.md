@@ -15,6 +15,7 @@ Do the steps below one time, in a new repository made from the template.
 | GitHub Actions   | Tests, PR rules, Secrets, and CodeQL workflows with pinned actions and read-only tokens.                                       |
 | Agent setup      | `AGENTS.md`, host adapters for Claude Code, Gemini CLI, and GitHub Copilot, two project skills, and vetted third-party skills. |
 | Writing rules    | English only, ASD-STE100 based writing rules, and a pull request template that starts with `## tl;dr`.                         |
+| IDE settings     | Shared WebStorm settings in `.idea/`: Prettier and ESLint on save, and run configurations. See [WebStorm setup](WEBSTORM.md).  |
 | Package scaffold | The [new-package](../.agents/skills/new-package/SKILL.md) skill makes a Node.js library, a CLI, or a Vue application.          |
 
 ## Required changes

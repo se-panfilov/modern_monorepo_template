@@ -19,6 +19,7 @@ It contains shared tool configuration, repository checks, Git hooks, GitHub Acti
 | [GitHub Actions](docs/GITHUB_ACTIONS.md)                     | CI workflows, inputs, and CodeQL.                               |
 | [Writing rules](docs/WRITING.md)                             | English documentation rules based on ASD-STE100.                |
 | [Glossary](docs/GLOSSARY.md)                                 | Terms for code, data, and documentation.                        |
+| [WebStorm setup](docs/WEBSTORM.md)                           | IDE settings, formatting, linting, TypeScript, and tests.       |
 
 ## AI agents
 
@@ -35,6 +36,7 @@ npm ci --ignore-scripts
 npm run check
 ```
 
+Use JetBrains WebStorm as the IDE. See [WebStorm setup](docs/WEBSTORM.md).
 Install the optional Git hooks with `npm run hooks:install`. See [Git hooks](docs/GIT_HOOKS.md).
 
 ## License
